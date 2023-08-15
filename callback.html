@@ -1,28 +1,75 @@
-<p>Loading...</p>
+<html>
+<head>
+  <title>My Jekyll Site</title>
+</head>
+<body>
 
-<script>
-// Get auth code from URL 
-const code = // code from URL
+  <p>Loading top albums...</p>
 
-// Make POST request to get access token
-fetch('https://accounts.spotify.com/api/token', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-  },
-  body: `grant_type=authorization_code&code=${code}&redirect_uri=http://yourusername.github.io/my-jekyll-site/callback&client_id=029941bb0f4b47768c899b25819fa09d&client_secret=46374e728c21409d9211ad790d1aa69d`
-})
-.then(res => res.json())
-.then(data => {
-  // Use access token to get top albums
-  fetch('https://api.spotify.com/v1/me/top/artists?limit=10', {
-    headers: {
-      'Authorization': `Bearer ${data.access_token}`
-    }
-  })
-  .then(res => res.json())
-  .then(albums => {
-    // Display albums
-  })
-})
-</script>
+  <script>
+
+    // Get auth code from URL
+    const code = // GET CODE
+
+    // Make request for access token
+    fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `grant_type=authorization_code&code=${code}&redirect_uri=http://amenti4k.github.io/albumshelf/callback&client_id=029941bb0f4b47768c899b25819fa09d&client_secret=46374e728c21409d9211ad790d1aa69d` 
+    })
+    .then(res => res.json())
+    .then(data => {
+      
+      const accessToken = data.access_token;
+
+      // Get top artists
+      fetch('https://api.spotify.com/v1/me/top/artists?limit=10', {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+
+        // Loop through top artists
+        data.artists.forEach(artist => {
+
+          // Get top albums for each artist
+          fetch(`https://api.spotify.com/v1/artists/${artist.id}/albums?include_groups=album,single&limit=5`, {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`
+            }
+          })
+          .then(response => response.json())
+          .then(albums => {
+
+            // Display album covers
+            albums.items.forEach(album => {
+
+              const imageUrl = album.images[0].url;
+
+              let html = `
+                <div>
+                  <img src="${imageUrl}" width="200">
+                  <p>${album.name}</p>
+                </div>
+              `;
+
+              document.body.innerHTML += html;
+
+            });
+
+          });
+
+        });
+
+      });
+
+    });
+
+  </script>
+
+</body>
+</html>
