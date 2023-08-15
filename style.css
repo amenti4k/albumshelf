@@ -1,1 +1,12 @@
+/* styles.css */
 
+div {
+  text-align: center;
+  width: 200px; 
+  display: inline-block;
+  margin: 10px;
+}
+
+img {
+  width: 100%;
+}
