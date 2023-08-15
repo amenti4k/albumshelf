@@ -1,0 +1,28 @@
+<p>Loading...</p>
+
+<script>
+// Get auth code from URL 
+const code = // code from URL
+
+// Make POST request to get access token
+fetch('https://accounts.spotify.com/api/token', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  },
+  body: `grant_type=authorization_code&code=${code}&redirect_uri=http://yourusername.github.io/my-jekyll-site/callback&client_id=029941bb0f4b47768c899b25819fa09d&client_secret=46374e728c21409d9211ad790d1aa69d`
+})
+.then(res => res.json())
+.then(data => {
+  // Use access token to get top albums
+  fetch('https://api.spotify.com/v1/me/top/artists?limit=10', {
+    headers: {
+      'Authorization': `Bearer ${data.access_token}`
+    }
+  })
+  .then(res => res.json())
+  .then(albums => {
+    // Display albums
+  })
+})
+</script>
